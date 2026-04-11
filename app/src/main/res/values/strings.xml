@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ContactBook</string>
+    <string name="ring">Позвонить</string>
+    <string name="email">Написать email</string>
+    <string name="place">Показать офис на карте</string>
+    <string name="shareContact">Поделиться контактом</string>
+    <string name="phoneNumber">+74951234567</string>
+    <string name="mail">contact@example.com</string>
+</resources>
