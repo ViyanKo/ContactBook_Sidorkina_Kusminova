@@ -86,7 +86,7 @@ fun ContactsInfo(ring: String, email: String, place: String, shareContact: Strin
         }
 
         Button(
-            onClick = { sendEmail(context,mail, "Обращение в поддержку", "Здравствуйте, \n") },
+            onClick = { sendEmail(context,mail,"Обращение") },
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFdfa0aa),
@@ -120,7 +120,7 @@ fun ContactsInfo(ring: String, email: String, place: String, shareContact: Strin
         }
 
         Button(
-            onClick = { shareText(context, "Контакт: ") },
+            onClick = { shareText(context, "Контакт: +7 (495) 123-45-67") },
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFdfa0aa),
@@ -161,12 +161,11 @@ fun callPhoneNumber(context: android.content.Context, phoneNumber: String) {
     context.startActivity(intent)
 }
 
-fun sendEmail(context: Context, address: String, subject: String, body: String) {
+fun sendEmail(context: Context, address: String, subject: String) {
     val intent = Intent(Intent.ACTION_SENDTO).apply {
         data = Uri.parse("mailto:")
         putExtra(Intent.EXTRA_EMAIL, arrayOf(address))
         putExtra(Intent.EXTRA_SUBJECT, subject)
-        putExtra(Intent.EXTRA_TEXT, body)
     }
     if (intent.resolveActivity(context.packageManager) != null) {
         context.startActivity(intent)
