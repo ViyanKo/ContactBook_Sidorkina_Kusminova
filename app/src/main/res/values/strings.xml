@@ -5,5 +5,10 @@
     <string name="place">Показать офис на карте</string>
     <string name="shareContact">Поделиться контактом</string>
     <string name="phoneNumber">+74951234567</string>
+    <string name="sharedText">Контакт: +7 (495) 123-45-67</string>
     <string name="mail">contact@example.com</string>
+    <string name="title">Поделиться через...</string>
+    <string name="notFound">Приложение не найдено</string>
+    <string name="ourOffice">Наш офис</string>
+    <string name="appeal">Обращение</string>
 </resources>

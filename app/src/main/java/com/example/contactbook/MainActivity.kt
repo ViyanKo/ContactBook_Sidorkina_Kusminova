@@ -1,18 +1,16 @@
 package com.example.contactbook
-
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,12 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.contactbook.ui.theme.ContactBookTheme
-import javax.security.auth.Subject
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,24 +55,32 @@ fun ContactsInfo(ring: String, email: String, place: String, shareContact: Strin
     val phoneNumber = stringResource(R.string.phoneNumber)
     val mail = stringResource(R.string.mail)
     val context = LocalContext.current
+    val title = stringResource(R.string.title)
+    val sharedText = stringResource(R.string.sharedText)
+    val creamColor = Color(0xFFf0eddc)
+    val pinkColor = Color(0xFFdfa0aa)
+    val darkPinkColor = Color(0xFF803535)
+    val notFound = stringResource(R.string.notFound)
+    val ourOffice = stringResource(R.string.ourOffice)
+    val appeal = stringResource(R.string.appeal)
 
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFFf0eddc))
+            .background(color = creamColor)
     ) {
         Button(
-            onClick = { callPhoneNumber(context, phoneNumber) },
+            onClick = { callPhoneNumber(context, phoneNumber, notFound) },
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFdfa0aa),
-                contentColor = Color(0xFF803535)
+                containerColor = pinkColor,
+                contentColor = darkPinkColor
             ),
             border = BorderStroke(
                 width = 3.dp,
-                color = Color(0xFF803535)
+                color = darkPinkColor
             ),
             modifier = Modifier
                 .padding(top = 16.dp, bottom = 16.dp)
@@ -86,15 +90,15 @@ fun ContactsInfo(ring: String, email: String, place: String, shareContact: Strin
         }
 
         Button(
-            onClick = { sendEmail(context,mail,"Обращение") },
+            onClick = { sendEmail(context,mail,appeal, notFound) },
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFdfa0aa),
-                contentColor = Color(0xFF803535)
+                containerColor = pinkColor,
+                contentColor = darkPinkColor
             ),
             border = BorderStroke(
                 width = 3.dp,
-                color = Color(0xFF803535)
+                color = darkPinkColor
             ),
             modifier = Modifier
                 .padding(top = 16.dp, bottom = 16.dp)
@@ -103,15 +107,15 @@ fun ContactsInfo(ring: String, email: String, place: String, shareContact: Strin
         }
 
         Button(
-            onClick = { showOnMap(context, 60.0237, 30.2289, "Наш офис") },
+            onClick = { showOnMap(context, 60.0237, 30.2289, ourOffice, notFound) },
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFdfa0aa),
-                contentColor = Color(0xFF803535)
+                containerColor = pinkColor,
+                contentColor = darkPinkColor
             ),
             border = BorderStroke(
                 width = 3.dp,
-                color = Color(0xFF803535)
+                color = darkPinkColor
             ),
             modifier = Modifier
                 .padding(top = 16.dp, bottom = 16.dp)
@@ -120,15 +124,15 @@ fun ContactsInfo(ring: String, email: String, place: String, shareContact: Strin
         }
 
         Button(
-            onClick = { shareText(context, "Контакт: +7 (495) 123-45-67") },
+            onClick = { shareText(context, sharedText, title, notFound) },
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFdfa0aa),
-                contentColor = Color(0xFF803535)
+                containerColor = pinkColor,
+                contentColor = darkPinkColor
             ),
             border = BorderStroke(
                 width = 3.dp,
-                color = Color(0xFF803535)
+                color = darkPinkColor
             ),
             modifier = Modifier
                 .padding(top = 16.dp, bottom = 16.dp)
@@ -153,15 +157,19 @@ fun AnnonsText(
     )
 }
 
-fun callPhoneNumber(context: android.content.Context, phoneNumber: String) {
+fun callPhoneNumber(context: android.content.Context, phoneNumber: String, notFound: String) {
     val intent = Intent(Intent.ACTION_DIAL).apply {
         data = Uri.parse("tel:$phoneNumber")
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
-    context.startActivity(intent)
+    if (intent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(intent)
+    } else {
+        Toast.makeText(context, notFound, Toast.LENGTH_SHORT).show()
+    }
 }
 
-fun sendEmail(context: Context, address: String, subject: String) {
+fun sendEmail(context: Context, address: String, subject: String, notFound: String) {
     val intent = Intent(Intent.ACTION_SENDTO).apply {
         data = Uri.parse("mailto:")
         putExtra(Intent.EXTRA_EMAIL, arrayOf(address))
@@ -169,29 +177,36 @@ fun sendEmail(context: Context, address: String, subject: String) {
     }
     if (intent.resolveActivity(context.packageManager) != null) {
         context.startActivity(intent)
+    } else {
+        Toast.makeText(context, notFound, Toast.LENGTH_SHORT).show()
     }
 }
 
-fun showOnMap(context: Context, latitude: Double, longitude: Double, label: String)
+fun showOnMap(context: Context, latitude: Double, longitude: Double, label: String, notFound: String)
 {
     val geoUri = Uri.parse("geo:0,0?q=$latitude,$longitude($label)")
     val intent = Intent(Intent.ACTION_VIEW, geoUri)
     if (intent.resolveActivity(context.packageManager) != null) {
         context.startActivity(intent)
+    } else {
+        Toast.makeText(context, notFound, Toast.LENGTH_SHORT).show()
     }
 }
 
-fun shareText(context: Context, text: String)
+fun shareText(context: Context, text: String, title: String, notFound: String)
 {
     val sendIntent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
         putExtra(Intent.EXTRA_TEXT, text)
     }
-        val chooser = Intent.createChooser(sendIntent, "Поделиться через...")
+
+    val chooser = Intent.createChooser(sendIntent, title)
+    if (sendIntent.resolveActivity(context.packageManager) != null) {
         context.startActivity(chooser)
+    } else {
+        Toast.makeText(context, notFound, Toast.LENGTH_SHORT).show()
+    }
 }
-
-
 
 @Preview(showBackground = true)
 @Composable
