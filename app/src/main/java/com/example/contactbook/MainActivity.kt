@@ -162,9 +162,9 @@ fun callPhoneNumber(context: android.content.Context, phoneNumber: String, notFo
         data = Uri.parse("tel:$phoneNumber")
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
-    if (intent.resolveActivity(context.packageManager) != null) {
+    try {
         context.startActivity(intent)
-    } else {
+    } catch (e: Exception) {
         Toast.makeText(context, notFound, Toast.LENGTH_SHORT).show()
     }
 }
@@ -175,9 +175,10 @@ fun sendEmail(context: Context, address: String, subject: String, notFound: Stri
         putExtra(Intent.EXTRA_EMAIL, arrayOf(address))
         putExtra(Intent.EXTRA_SUBJECT, subject)
     }
-    if (intent.resolveActivity(context.packageManager) != null) {
+
+    try {
         context.startActivity(intent)
-    } else {
+    } catch (e: Exception) {
         Toast.makeText(context, notFound, Toast.LENGTH_SHORT).show()
     }
 }
@@ -186,9 +187,10 @@ fun showOnMap(context: Context, latitude: Double, longitude: Double, label: Stri
 {
     val geoUri = Uri.parse("geo:0,0?q=$latitude,$longitude($label)")
     val intent = Intent(Intent.ACTION_VIEW, geoUri)
-    if (intent.resolveActivity(context.packageManager) != null) {
+
+    try {
         context.startActivity(intent)
-    } else {
+    } catch (e: Exception) {
         Toast.makeText(context, notFound, Toast.LENGTH_SHORT).show()
     }
 }
