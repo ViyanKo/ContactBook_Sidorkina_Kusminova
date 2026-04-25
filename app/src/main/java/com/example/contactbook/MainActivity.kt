@@ -210,6 +210,7 @@ fun shareText(context: Context, text: String, title: String, notFound: String)
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
